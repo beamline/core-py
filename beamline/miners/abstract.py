@@ -1,7 +1,6 @@
 from abc import ABC
 import paho.mqtt.client as mqtt
 import uuid
-import json
 
 
 class AbstractMiner(ABC):

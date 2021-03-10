@@ -1,5 +1,5 @@
-from beamline.model.AbstractMiner import AbstractMiner
-from beamline.model.MinerParameter import *
+from beamline.miners.abstract import *
+from beamline.model.parameters import *
 
 
 class DiscoveryMiner(AbstractMiner):

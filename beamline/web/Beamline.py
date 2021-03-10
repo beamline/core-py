@@ -1,7 +1,7 @@
 import flask
-from flask import request, jsonify
+from beamline.web.controllers import *
+from flask import jsonify
 from flask_cors import CORS
-from beamline.controller import MinerController
 
 
 class Beamline:
@@ -15,4 +15,4 @@ class Beamline:
 
 @Beamline.app.route('/api/v1/miners', methods=['GET'])
 def miners():
-    return jsonify(MinerController.MinerController.miners)
+    return jsonify(MinerController.miners)
