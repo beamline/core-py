@@ -6,7 +6,7 @@ import uuid
 class AbstractMiner(ABC):
 
     def __init__(self):
-        self._id = uuid.uuid1()
+        self.id = uuid.uuid1()
         self._name = ""
         self._description = ""
         self._running = False
@@ -56,7 +56,7 @@ class AbstractMiner(ABC):
 
     def serialize(self):
         return {
-            "id": self._id,
+            "id": self.id,
             "name": self._name,
             "description": self._description,
             "configurationParameters": [

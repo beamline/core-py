@@ -1,18 +1,5 @@
 import uuid
-
-
-class MinerInstanceConfiguration:
-    def __init__(self, name, stream):
-        self.name = name
-        self.stream = stream
-        self.parameter_values = []
-
-    def serialize(self):
-        return {
-            "name": self.name,
-            "stream": self.stream.serialize(),
-            "parameterValues": [x.serialize() for x in self.parameter_values]
-        }
+from flask import jsonify
 
 
 class MinerInstance:
@@ -24,7 +11,7 @@ class MinerInstance:
 
     def serialize(self):
         return {
-            "id": id,
+            "id": self._id,
             "miner": self._miner.serialize(),
             "configuration": self._configuration.serialize()
         }
