@@ -9,26 +9,27 @@ class AbstractMiner(ABC):
     def __init__(self):
         self._id = uuid.uuid1()
         self._name = ""
+        self._description = ""
         self._running = False
         self._configured = True
-        self._miner_instance
-        self._stream
+        # self._miner_instance
+        # self._stream
         self._client = mqtt.Client()
 
     def configure(self, configuration):
-        pass
+        raise NotImplemented
 
     def consume_event(self, case_id, activity_name):
-        pass
+        raise NotImplemented
 
     def get_views(self, configuration):
-        pass
+        raise NotImplemented
 
     def get_configuration_parameters(self):
-        pass
+        raise NotImplemented
 
     def get_view_parameters(self):
-        pass
+        raise NotImplemented
 
     def on_message(self, userdata, msg):
         structure = msg.topic.split("/")
@@ -55,4 +56,14 @@ class AbstractMiner(ABC):
         self._client.disconnect()
 
     def serialize(self):
-        return {"aaa":12}  #json.dumps(self, default=lambda o: o.__dict__)
+        return {
+            "id": self._id,
+            "name": self._name,
+            "description": self._description,
+            "configurationParameters": [
+                x.serialize() for x in self.get_configuration_parameters()
+            ],
+            "viewParameters": [
+                x.serialize() for x in self.get_view_parameters()
+            ]
+        }
