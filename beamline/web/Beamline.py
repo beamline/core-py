@@ -1,6 +1,5 @@
 import flask
-from flask import jsonify
-from flask import request
+from flask import jsonify, request, make_response
 from flask_cors import CORS
 
 from beamline.model.instances import *
@@ -16,10 +15,17 @@ class Beamline:
     instances = []
 
     @staticmethod
-    def get_by_id(id):
+    def get_miner_by_id(id):
         for m in Beamline.miners:
-            if str(m.id) == id:
+            if str(m._id) == id:
                 return m
+        return None
+
+    @staticmethod
+    def get_instance_by_id(id):
+        for i in Beamline.instances:
+            if str(i._id) == id:
+                return i
         return None
 
     def serve(self):
@@ -39,7 +45,42 @@ def get_instances():
 @Beamline.app.route('/api/v1/instances/<minerid>', methods=['POST'])
 def instances_create(minerid = None):
     configuration = MinerInstanceConfiguration.parse(request.get_json())
-    miner = Beamline.get_by_id(minerid)
+    miner = Beamline.get_miner_by_id(minerid)
     miner_instance = MinerInstance(miner, configuration)
     Beamline.instances.append(miner_instance)
     return miner_instance.serialize()
+
+
+@Beamline.app.route('/api/v1/instances/<instanceid>/delete', methods=['DELETE'])
+def instances_delete(instanceid = None):
+    instance = Beamline.get_instance_by_id(instanceid)
+    if instance is None:
+        return make_response(404)
+    Beamline.instances.remove(instance)
+    return instance.status
+
+
+@Beamline.app.route('/api/v1/instances/<instanceid>/start', methods=['GET'])
+def instances_start(instanceid = None):
+    instance = Beamline.get_instance_by_id(instanceid)
+    if instance is None:
+        return make_response(404)
+    instance.set_mining()
+    return "true"
+
+
+@Beamline.app.route('/api/v1/instances/<instanceid>/stop', methods=['GET'])
+def instances_stop(instanceid = None):
+    instance = Beamline.get_instance_by_id(instanceid)
+    if instance is None:
+        return make_response(404)
+    instance.set_not_mining()
+    return "true"
+
+
+@Beamline.app.route('/api/v1/instances/<instanceid>/status', methods=['GET'])
+def instances_status(instanceid = None):
+    instance = Beamline.get_instance_by_id(instanceid)
+    if instance is None:
+        return make_response(404)
+    return instance.status

@@ -8,6 +8,16 @@ class MinerInstance:
         self._id = uuid.uuid1()
         self._miner = miner
         self._configuration = configuration
+        self.status = "not_mining"
+
+    def set_mining(self):
+        self.status = "mining"
+
+    def set_not_mining(self):
+        self.status = "not_mining"
+
+    def set_configuring(self):
+        self.status = "configuring"
 
     def serialize(self):
         return {
