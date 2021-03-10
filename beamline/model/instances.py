@@ -10,10 +10,10 @@ class MinerInstance:
         self._configuration = configuration
         self.status = "not_mining"
 
-    def set_mining(self):
+    def start(self):
         self.status = "mining"
 
-    def set_not_mining(self):
+    def stop(self):
         self.status = "not_mining"
 
     def set_configuring(self):

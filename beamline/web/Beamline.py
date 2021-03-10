@@ -46,6 +46,8 @@ def get_instances():
 def instances_create(minerid = None):
     configuration = MinerInstanceConfiguration.parse(request.get_json())
     miner = Beamline.get_miner_by_id(minerid)
+    if miner is None:
+        return make_response("Missing miner", 404)
     miner_instance = MinerInstance(miner, configuration)
     Beamline.instances.append(miner_instance)
     return miner_instance.serialize()
@@ -55,7 +57,7 @@ def instances_create(minerid = None):
 def instances_delete(instanceid = None):
     instance = Beamline.get_instance_by_id(instanceid)
     if instance is None:
-        return make_response(404)
+        return make_response("Missing instance", 404)
     Beamline.instances.remove(instance)
     return instance.status
 
@@ -64,8 +66,8 @@ def instances_delete(instanceid = None):
 def instances_start(instanceid = None):
     instance = Beamline.get_instance_by_id(instanceid)
     if instance is None:
-        return make_response(404)
-    instance.set_mining()
+        return make_response("Missing instance", 404)
+    instance.start()
     return "true"
 
 
@@ -73,8 +75,8 @@ def instances_start(instanceid = None):
 def instances_stop(instanceid = None):
     instance = Beamline.get_instance_by_id(instanceid)
     if instance is None:
-        return make_response(404)
-    instance.set_not_mining()
+        return make_response("Missing instance", 404)
+    instance.stop()
     return "true"
 
 
@@ -82,5 +84,5 @@ def instances_stop(instanceid = None):
 def instances_status(instanceid = None):
     instance = Beamline.get_instance_by_id(instanceid)
     if instance is None:
-        return make_response(404)
+        return make_response("Missing instance", 404)
     return instance.status
