@@ -1,36 +1,43 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 import paho.mqtt.client as mqtt
-import uuid
+from beamline.model.parameters import *
 
 
 class AbstractMiner(ABC):
 
-    def __init__(self):
-        self._id = uuid.uuid1()
+    def __init__(self, id):
+        self._id = id
         self._name = ""
         self._description = ""
         self._running = False
         self._configured = True
-        # self._miner_instance
-        # self._stream
+        self._stream = Stream()
         self._client = mqtt.Client()
 
+    @abstractmethod
     def configure(self, configuration):
-        raise NotImplemented
+        pass
 
+    @abstractmethod
     def consume_event(self, case_id, activity_name):
-        raise NotImplemented
+        pass
 
+    @abstractmethod
     def get_views(self, configuration):
-        raise NotImplemented
+        pass
 
+    @abstractmethod
     def get_configuration_parameters(self):
-        raise NotImplemented
+        pass
 
+    @abstractmethod
     def get_view_parameters(self):
-        raise NotImplemented
+        pass
 
-    def on_message(self, userdata, msg):
+    def stream(self, stream):
+        self._stream = stream
+
+    def on_message(self, client, userdata, msg):
         structure = msg.topic.split("/")
         activity_name = structure[-1]
         case_id = structure[-2]
@@ -46,13 +53,14 @@ class AbstractMiner(ABC):
         self._client.subscribe(self._stream.topic_base + "/" + self._stream.process_name + "/#")
         self._client.on_message = self.on_message
 
-        self._client.loop_forever()
+        self._client.loop_start()
         self._running = True
 
     def stop(self):
         if not self._running:
             raise Exception("Miner instance not running")
         self._client.disconnect()
+        self._client.loop_stop()
 
     def serialize(self):
         return {

@@ -5,9 +5,9 @@ def test_instance_create_failure(test_client):
     response = test_client.post('/api/v1/instances/RND', json={
         "name": "string",
         "stream": {
-            "processName": "string",
-            "brokerHost": "string",
-            "topicBase": "string"
+            "processName": "test",
+            "brokerHost": "broker.hivemq.com",
+            "topicBase": "pmcep"
         },
         "parameterValues": []
     })
@@ -19,9 +19,9 @@ def test_instance_create(test_client):
     response = test_client.post('/api/v1/instances/' + pytest.miner_id, json={
         "name": "instance1",
         "stream": {
-            "processName": "string",
-            "brokerHost": "string",
-            "topicBase": "string"
+            "processName": "test",
+            "brokerHost": "broker.hivemq.com",
+            "topicBase": "pmcep"
         },
         "parameterValues": []
     })

@@ -1,4 +1,5 @@
 import flask
+import copy
 from flask import jsonify, request, make_response
 from flask_cors import CORS
 
@@ -48,18 +49,10 @@ def instances_create(minerid = None):
     miner = Beamline.get_miner_by_id(minerid)
     if miner is None:
         return make_response("Missing miner", 404)
-    miner_instance = MinerInstance(miner, configuration)
+    miner_klass = miner.__class__
+    miner_instance = MinerInstance(miner_klass(miner._id), configuration)
     Beamline.instances.append(miner_instance)
     return miner_instance.serialize()
-
-
-@Beamline.app.route('/api/v1/instances/<instanceid>/delete', methods=['DELETE'])
-def instances_delete(instanceid = None):
-    instance = Beamline.get_instance_by_id(instanceid)
-    if instance is None:
-        return make_response("Missing instance", 404)
-    Beamline.instances.remove(instance)
-    return instance.status
 
 
 @Beamline.app.route('/api/v1/instances/<instanceid>/start', methods=['GET'])
@@ -85,4 +78,13 @@ def instances_status(instanceid = None):
     instance = Beamline.get_instance_by_id(instanceid)
     if instance is None:
         return make_response("Missing instance", 404)
+    return instance.status
+
+
+@Beamline.app.route('/api/v1/instances/<instanceid>/delete', methods=['DELETE'])
+def instances_delete(instanceid = None):
+    instance = Beamline.get_instance_by_id(instanceid)
+    if instance is None:
+        return make_response("Missing instance", 404)
+    Beamline.instances.remove(instance)
     return instance.status

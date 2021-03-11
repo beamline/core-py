@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Stream:
-    def __init__(self, process_name, broker_host, topic_base):
+    def __init__(self, process_name ="", broker_host ="", topic_base =""):
         self.process_name = process_name
         self.broker_host = broker_host
         self.topic_base = topic_base
@@ -62,6 +62,12 @@ class MinerInstanceConfiguration:
         self.name = name
         self.stream = stream
         self.parameter_values = []
+
+    def get(self, name):
+        for p in self.parameter_values:
+            if p.name == name:
+                return p
+        return None
 
     @staticmethod
     def parse(json):
