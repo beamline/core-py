@@ -56,6 +56,10 @@ class MinerParameterValue:
             "value": self.value
         }
 
+    @staticmethod
+    def parse(json):
+        return MinerParameterValue(json["name"], json["value"])
+
 
 class MinerInstanceConfiguration:
     def __init__(self, name, stream):

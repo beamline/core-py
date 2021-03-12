@@ -88,3 +88,13 @@ def instances_delete(instance_id=None):
         return make_response("Missing instance", 404)
     Beamline.instances.remove(instance)
     return instance.status
+
+
+@Beamline.app.route('/api/v1/instances/<instance_id>/views', methods=['POST'])
+def instances_view(instance_id=None):
+    instance = Beamline.get_instance_by_id(instance_id)
+    if instance is None:
+        return make_response("Missing instance", 404)
+    config = [MinerParameterValue.parse(x) for x in request.get_json()]
+    views = instance._miner.get_views(config)
+    return jsonify([v.serialize() for v in views])
