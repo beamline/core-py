@@ -23,7 +23,10 @@ def test_instance_create(test_client):
             "brokerHost": "broker.hivemq.com",
             "topicBase": "pmcep"
         },
-        "parameterValues": []
+        "parameterValues": [
+            {"name": "test1", "value": "t1"},
+            {"name": "test2", "value": "0.1"}
+        ]
     })
     pytest.instance_id = response.json["id"]
     assert response.status_code == 200
