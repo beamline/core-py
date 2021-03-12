@@ -43,10 +43,10 @@ def get_instances():
     return jsonify([i.serialize() for i in Beamline.instances])
 
 
-@Beamline.app.route('/api/v1/instances/<minerid>', methods=['POST'])
-def instances_create(minerid = None):
+@Beamline.app.route('/api/v1/instances/<miner_id>', methods=['POST'])
+def instances_create(miner_id=None):
     configuration = MinerInstanceConfiguration.parse(request.get_json())
-    miner = Beamline.get_miner_by_id(minerid)
+    miner = Beamline.get_miner_by_id(miner_id)
     if miner is None:
         return make_response("Missing miner", 404)
     miner_klass = miner.__class__
@@ -55,35 +55,35 @@ def instances_create(minerid = None):
     return miner_instance.serialize()
 
 
-@Beamline.app.route('/api/v1/instances/<instanceid>/start', methods=['GET'])
-def instances_start(instanceid = None):
-    instance = Beamline.get_instance_by_id(instanceid)
+@Beamline.app.route('/api/v1/instances/<instance_id>/start', methods=['GET'])
+def instances_start(instance_id=None):
+    instance = Beamline.get_instance_by_id(instance_id)
     if instance is None:
         return make_response("Missing instance", 404)
     instance.start()
     return "true"
 
 
-@Beamline.app.route('/api/v1/instances/<instanceid>/stop', methods=['GET'])
-def instances_stop(instanceid = None):
-    instance = Beamline.get_instance_by_id(instanceid)
+@Beamline.app.route('/api/v1/instances/<instance_id>/stop', methods=['GET'])
+def instances_stop(instance_id=None):
+    instance = Beamline.get_instance_by_id(instance_id)
     if instance is None:
         return make_response("Missing instance", 404)
     instance.stop()
     return "true"
 
 
-@Beamline.app.route('/api/v1/instances/<instanceid>/status', methods=['GET'])
-def instances_status(instanceid = None):
-    instance = Beamline.get_instance_by_id(instanceid)
+@Beamline.app.route('/api/v1/instances/<instance_id>/status', methods=['GET'])
+def instances_status(instance_id=None):
+    instance = Beamline.get_instance_by_id(instance_id)
     if instance is None:
         return make_response("Missing instance", 404)
     return instance.status
 
 
-@Beamline.app.route('/api/v1/instances/<instanceid>/delete', methods=['DELETE'])
-def instances_delete(instanceid = None):
-    instance = Beamline.get_instance_by_id(instanceid)
+@Beamline.app.route('/api/v1/instances/<instance_id>/delete', methods=['DELETE'])
+def instances_delete(instance_id=None):
+    instance = Beamline.get_instance_by_id(instance_id)
     if instance is None:
         return make_response("Missing instance", 404)
     Beamline.instances.remove(instance)
